@@ -18,17 +18,43 @@ window.onload = async () => {
     await loadChatData();
 };
 
-function addMessage(sender, content) {
+function addMessage(sender, content, isTyping = true) {
     const chatMessages = document.getElementById('chatMessages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}`;
-    messageDiv.innerHTML = `
-        <div class="message-content">
-            ${content}
-        </div>
-    `;
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    if (isTyping && sender === 'bot') {
+        // הוספת אנימציית הקלדה
+        messageDiv.innerHTML = `
+            <div class="message-content typing">
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        `;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        // המתנה של 1-2 שניות לפני הצגת התוכן
+        setTimeout(() => {
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${content}
+                </div>
+            `;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, Math.random() * 1000 + 1000);
+    } else {
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                ${content}
+            </div>
+        `;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 }
 
 function handleCategorySelect(category) {
@@ -40,9 +66,13 @@ function handleCategorySelect(category) {
         return;
     }
 
+    // הוספת הודעת משתמש
+    addMessage('user', `<p>אני מעוניין לשמוע על ${categoryData.title}</p>`, false);
+
+    // הוספת תגובת הבוט
     let content = `
         <div class="category-content">
-            <h2>${categoryData.title}</h2>
+            <h2><i class="fas fa-lightbulb"></i> ${categoryData.title}</h2>
             ${categoryData.description ? `<p class="description">${categoryData.description}</p>` : ''}
             <div class="options-container">
     `;
@@ -50,11 +80,11 @@ function handleCategorySelect(category) {
     categoryData.options.forEach(option => {
         content += `
             <div class="option">
-                <h3>${option.title}</h3>
+                <h3><i class="fas fa-star"></i> ${option.title}</h3>
                 <p class="highlight">${option.content}</p>
                 ${option.details && option.details.length > 0 ? `
                     <ul>
-                        ${option.details.map(detail => `<li>${detail}</li>`).join('')}
+                        ${option.details.map(detail => `<li><i class="fas fa-check-circle"></i> ${detail}</li>`).join('')}
                     </ul>
                 ` : ''}
             </div>
@@ -63,16 +93,19 @@ function handleCategorySelect(category) {
 
     content += `
             </div>
+            <p class="follow-up">האם תרצו לשמוע עוד על אחת מהאפשרויות הללו?</p>
         </div>
     `;
 
     addMessage('bot', content);
     
-    // הוספת כפתור חזרה
+    // עדכון כפתורי הבחירה
     const controls = document.getElementById('chatControls');
     controls.innerHTML = `
         <div class="button-grid">
-            <button class="secondary" onclick="handleBackToMain()">חזרה לתפריט הראשי</button>
+            <button class="secondary" onclick="handleBackToMain()">
+                <i class="fas fa-arrow-right"></i> חזרה לתפריט הראשי
+            </button>
         </div>
     `;
 }
@@ -112,7 +145,10 @@ function updateControls(state, categoryId = '') {
 }
 
 function handleBackToMain() {
-    location.reload();
+    addMessage('user', '<p>אני רוצה לחזור לתפריט הראשי</p>', false);
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
 }
 
 function handleBackToCategory() {
