@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>צ'אטבוט סטוריליין</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <header class="chat-header">
+            <h1>צ'אטבוט סטוריליין</h1>
+        </header>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-content">
+                    <p><strong>בכל ארגון מסתתר פוטנציאל עצום</strong> -- יכולות לא ממומשות, כישרונות חבויים והזדמנויות לצמיחה שנשארות על הרצפה.</p>
+                    <p><em>במקום תיאוריות שלא מחוברות לשטח, אנחנו מספקים פתרונות מעשיים שיוצרים שינוי אמיתי ומקפיצים ביצועים -- במהירות, ביעילות וללא מהפכות מיותרות.</em></p>
+                    <ul>
+                        <li><strong>מיפוי מדויק</strong> של הכישורים הדרושים להצלחה</li>
+                        <li><strong>זיהוי פערים</strong> והקניית כלים להשלמתם</li>
+                        <li><strong>Quick Wins</strong> - צעדים קטנים שיוצרים אימפקט גדול</li>
+                    </ul>
+                    <p><strong>במה אתם מעוניינים?</strong></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-controls" id="chatControls">
+            <div class="button-grid" id="mainCategories">
+                <button onclick="handleCategorySelect('פיתוחי_מנהלים')">פיתוחי מנהלים</button>
+                <button onclick="handleCategorySelect('ניהול_ממשקים')">ניהול ממשקים ושותפויות</button>
+                <button onclick="handleCategorySelect('מיומנויות_שירות')">מיומנויות שירות ומכירה</button>
+                <button onclick="handleCategorySelect('תהליכים_ארגוניים')">תהליכים ארגוניים</button>
+                <button onclick="handleCategorySelect('סדנאות_חד_פעמיות')">סדנאות חד פעמיות</button>
+                <button onclick="handleCategorySelect('הרצאות')">הרצאות</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
