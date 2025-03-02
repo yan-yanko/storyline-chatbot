@@ -114,6 +114,8 @@ body {
     border-radius: 0.8rem;
     padding: 1.5rem;
     transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
 }
 
 .option:hover {
@@ -122,11 +124,51 @@ body {
     border-color: var(--hover-color);
 }
 
-.option h3 {
-    color: var(--primary-color);
-    margin-top: 0;
+.option-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 1rem;
+}
+
+.option-header h3 {
+    margin: 0;
+    color: var(--primary-color);
     font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.expand-icon {
+    color: var(--primary-color);
+    transition: transform 0.3s ease;
+}
+
+.option-content {
+    max-height: 1000px;
+    opacity: 1;
+    transition: all 0.5s ease;
+    overflow: hidden;
+}
+
+.option.collapsed .option-content {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.option.collapsed .expand-icon {
+    transform: rotate(-90deg);
+}
+
+.option.collapsed {
+    padding: 1rem 1.5rem;
+}
+
+.option.collapsed:hover {
+    background-color: var(--chat-bg);
+    opacity: 0.9;
 }
 
 .option p.highlight {
@@ -135,6 +177,7 @@ body {
     margin-bottom: 1rem;
     font-size: 1rem;
     opacity: 0.9;
+    line-height: 1.5;
 }
 
 .option ul {
@@ -146,6 +189,7 @@ body {
 
 .option li {
     margin-bottom: 0.5rem;
+    line-height: 1.4;
 }
 
 .chat-controls {

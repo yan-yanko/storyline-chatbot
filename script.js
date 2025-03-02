@@ -77,16 +77,21 @@ function handleCategorySelect(category) {
             <div class="options-container">
     `;
 
-    categoryData.options.forEach(option => {
+    categoryData.options.forEach((option, index) => {
         content += `
-            <div class="option">
-                <h3><i class="fas fa-star"></i> ${option.title}</h3>
-                <p class="highlight">${option.content}</p>
-                ${option.details && option.details.length > 0 ? `
-                    <ul>
-                        ${option.details.map(detail => `<li><i class="fas fa-check-circle"></i> ${detail}</li>`).join('')}
-                    </ul>
-                ` : ''}
+            <div class="option collapsed" onclick="toggleOption(${index})">
+                <div class="option-header">
+                    <h3><i class="fas fa-star"></i> ${option.title}</h3>
+                    <i class="fas fa-chevron-down expand-icon"></i>
+                </div>
+                <div class="option-content">
+                    <p class="highlight">${option.content}</p>
+                    ${option.details && option.details.length > 0 ? `
+                        <ul>
+                            ${option.details.map(detail => `<li><i class="fas fa-check-circle"></i> ${detail}</li>`).join('')}
+                        </ul>
+                    ` : ''}
+                </div>
             </div>
         `;
     });
@@ -108,6 +113,25 @@ function handleCategorySelect(category) {
             </button>
         </div>
     `;
+}
+
+function toggleOption(index) {
+    const options = document.querySelectorAll('.option');
+    const option = options[index];
+    
+    if (option.classList.contains('collapsed')) {
+        // סגירת כל האפשרויות האחרות
+        options.forEach((opt) => {
+            if (opt !== option) {
+                opt.classList.add('collapsed');
+            }
+        });
+        // פתיחת האפשרות הנבחרת
+        option.classList.remove('collapsed');
+    } else {
+        // סגירת האפשרות
+        option.classList.add('collapsed');
+    }
 }
 
 function handleWorkshopSelect(workshopId) {
