@@ -103,7 +103,7 @@ body {
 
 .options-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: 1fr;
     gap: 1rem;
     margin-top: 1.5rem;
 }
@@ -112,14 +112,15 @@ body {
     background-color: var(--chat-bg);
     border: 1px solid var(--primary-color);
     border-radius: 0.8rem;
-    padding: 1.5rem;
+    padding: 1rem;
     transition: all 0.3s ease;
     cursor: pointer;
     overflow: hidden;
+    margin-bottom: 1rem;
 }
 
 .option:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
     border-color: var(--hover-color);
 }
@@ -128,13 +129,15 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: rgba(139, 92, 246, 0.1);
+    border-radius: 0.5rem;
 }
 
 .option-header h3 {
     margin: 0;
     color: var(--primary-color);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     display: flex;
     align-items: center;
 }
@@ -142,19 +145,20 @@ body {
 .expand-icon {
     color: var(--primary-color);
     transition: transform 0.3s ease;
+    font-size: 0.9rem;
 }
 
 .option-content {
-    max-height: 1000px;
+    max-height: 500px;
     opacity: 1;
-    transition: all 0.5s ease;
+    transition: all 0.3s ease;
     overflow: hidden;
+    padding: 1rem 0.5rem;
 }
 
 .option.collapsed .option-content {
     max-height: 0;
     opacity: 0;
-    margin: 0;
     padding: 0;
 }
 
@@ -163,26 +167,26 @@ body {
 }
 
 .option.collapsed {
-    padding: 1rem 1.5rem;
+    padding: 0.5rem;
+    background-color: transparent;
 }
 
 .option.collapsed:hover {
-    background-color: var(--chat-bg);
-    opacity: 0.9;
+    background-color: rgba(139, 92, 246, 0.05);
 }
 
 .option p.highlight {
     color: var(--text-color);
-    font-weight: 500;
-    margin-bottom: 1rem;
-    font-size: 1rem;
+    font-weight: 400;
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
     opacity: 0.9;
     line-height: 1.5;
 }
 
 .option ul {
-    margin: 0;
-    padding-right: 1.2rem;
+    margin: 0.5rem 0;
+    padding-right: 1.5rem;
     color: var(--text-color);
     opacity: 0.8;
 }
@@ -190,6 +194,16 @@ body {
 .option li {
     margin-bottom: 0.5rem;
     line-height: 1.4;
+    font-size: 0.9rem;
+    position: relative;
+}
+
+.option li i {
+    position: absolute;
+    right: -1.5rem;
+    top: 0.2rem;
+    color: var(--primary-color);
+    opacity: 0.8;
 }
 
 .chat-controls {

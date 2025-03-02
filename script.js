@@ -79,16 +79,24 @@ function handleCategorySelect(category) {
 
     categoryData.options.forEach((option, index) => {
         content += `
-            <div class="option collapsed" onclick="toggleOption(${index})">
+            <div class="option collapsed" onclick="toggleOption(event, ${index})">
                 <div class="option-header">
-                    <h3><i class="fas fa-star"></i> ${option.title}</h3>
+                    <h3>
+                        <i class="fas fa-star"></i>
+                        ${option.title}
+                    </h3>
                     <i class="fas fa-chevron-down expand-icon"></i>
                 </div>
                 <div class="option-content">
                     <p class="highlight">${option.content}</p>
                     ${option.details && option.details.length > 0 ? `
                         <ul>
-                            ${option.details.map(detail => `<li><i class="fas fa-check-circle"></i> ${detail}</li>`).join('')}
+                            ${option.details.map(detail => `
+                                <li>
+                                    <i class="fas fa-check-circle"></i>
+                                    ${detail}
+                                </li>
+                            `).join('')}
                         </ul>
                     ` : ''}
                 </div>
@@ -98,7 +106,7 @@ function handleCategorySelect(category) {
 
     content += `
             </div>
-            <p class="follow-up">האם תרצו לשמוע עוד על אחת מהאפשרויות הללו?</p>
+            <p class="follow-up">לחצו על כל אפשרות כדי לראות פרטים נוספים</p>
         </div>
     `;
 
@@ -115,7 +123,9 @@ function handleCategorySelect(category) {
     `;
 }
 
-function toggleOption(index) {
+function toggleOption(event, index) {
+    event.stopPropagation(); // מונע בעיות של הפעלה כפולה
+    
     const options = document.querySelectorAll('.option');
     const option = options[index];
     
@@ -128,6 +138,11 @@ function toggleOption(index) {
         });
         // פתיחת האפשרות הנבחרת
         option.classList.remove('collapsed');
+        
+        // גלילה חלקה לאפשרות שנפתחה
+        setTimeout(() => {
+            option.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 300);
     } else {
         // סגירת האפשרות
         option.classList.add('collapsed');
