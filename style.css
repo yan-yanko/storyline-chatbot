@@ -322,3 +322,96 @@ button.secondary:hover {
 .option .fas {
     color: var(--primary-color);
 }
+
+/* תיבת חיפוש */
+.search-container {
+    padding: 1rem;
+    background-color: var(--chat-bg);
+    border-top: 1px solid var(--primary-color);
+}
+
+.search-box {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.8rem 2.5rem 0.8rem 1rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 0.8rem;
+    background-color: var(--bot-message-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--hover-color);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.search-box input::placeholder {
+    color: rgba(226, 232, 240, 0.6);
+}
+
+.search-box .fas {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+/* הסתרת אפשרויות שלא מתאימות לחיפוש */
+.option.hidden {
+    display: none;
+}
+
+.no-results {
+    text-align: center;
+    color: var(--text-color);
+    opacity: 0.8;
+    padding: 2rem;
+}
+
+/* תגית קטגוריה */
+.category-tag {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    margin-right: 1rem;
+}
+
+/* תוצאות חיפוש */
+.search-results {
+    padding: 1rem;
+}
+
+.search-results .option {
+    border: 1px solid var(--primary-color);
+    margin-bottom: 1rem;
+    background-color: var(--bot-message-bg);
+}
+
+.search-results .option-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: rgba(139, 92, 246, 0.1);
+}
+
+.search-results .option.collapsed {
+    background-color: var(--bot-message-bg);
+}
+
+.search-results .option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+}

@@ -1,5 +1,6 @@
 let currentCategory = '';
 let chatData;
+let allOptions = [];
 
 // טעינת הנתונים מקובץ ה-JSON
 async function loadChatData() {
@@ -7,6 +8,17 @@ async function loadChatData() {
         const response = await fetch('data.json');
         chatData = await response.json();
         console.log('נתונים נטענו בהצלחה:', chatData);
+        
+        // יצירת מערך של כל האפשרויות לחיפוש
+        Object.entries(chatData.categories).forEach(([categoryId, category]) => {
+            category.options.forEach(option => {
+                allOptions.push({
+                    categoryId,
+                    categoryTitle: category.title,
+                    ...option
+                });
+            });
+        });
     } catch (error) {
         console.error('שגיאה בטעינת הנתונים:', error);
         addMessage('bot', 'מצטער, אך אירעה שגיאה בטעינת הנתונים. אנא נסה שוב מאוחר יותר.');
@@ -192,4 +204,77 @@ function handleBackToMain() {
 
 function handleBackToCategory() {
     handleCategorySelect(currentCategory);
+}
+
+// פונקציית החיפוש
+function handleSearch(query) {
+    if (!query.trim()) {
+        // אם החיפוש ריק, נציג את כל הקטגוריות
+        document.getElementById('mainCategories').style.display = 'grid';
+        // נסתיר את תוצאות החיפוש אם הן מוצגות
+        const existingResults = document.querySelector('.search-results');
+        if (existingResults) {
+            existingResults.remove();
+        }
+        return;
+    }
+
+    // הסתרת הקטגוריות הראשיות
+    document.getElementById('mainCategories').style.display = 'none';
+
+    // חיפוש אפשרויות מתאימות
+    const results = allOptions.filter(option => 
+        option.title.includes(query) || 
+        option.content.includes(query) ||
+        (option.details && option.details.some(detail => detail.includes(query)))
+    );
+
+    // יצירת תצוגת תוצאות
+    let resultsHtml = `
+        <div class="search-results options-container">
+            ${results.length > 0 ? results.map(option => `
+                <div class="option collapsed" onclick="handleOptionClick(event, '${option.categoryId}', '${option.title}')">
+                    <div class="option-header">
+                        <h3>
+                            <i class="fas fa-star"></i>
+                            ${option.title}
+                        </h3>
+                        <span class="category-tag">${option.categoryTitle}</span>
+                    </div>
+                    <div class="option-content">
+                        <p class="highlight">${option.content}</p>
+                        ${option.details ? `
+                            <ul>
+                                ${option.details.map(detail => `
+                                    <li><i class="fas fa-check-circle"></i> ${detail}</li>
+                                `).join('')}
+                            </ul>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('') : '<div class="no-results">לא נמצאו תוצאות לחיפוש זה</div>'}
+        </div>
+    `;
+
+    // הצגת התוצאות
+    const existingResults = document.querySelector('.search-results');
+    if (existingResults) {
+        existingResults.remove();
+    }
+    document.querySelector('.chat-controls').insertAdjacentHTML('afterbegin', resultsHtml);
+}
+
+function handleOptionClick(event, categoryId, optionTitle) {
+    event.stopPropagation();
+    const option = event.currentTarget;
+    
+    if (option.classList.contains('collapsed')) {
+        // סגירת כל האפשרויות האחרות
+        document.querySelectorAll('.option').forEach(opt => {
+            if (opt !== option) opt.classList.add('collapsed');
+        });
+        option.classList.remove('collapsed');
+    } else {
+        option.classList.add('collapsed');
+    }
 }
