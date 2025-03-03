@@ -34,32 +34,32 @@ function showMainOptions() {
     optionsMessage += '<div class="options-container">';
     
     optionsMessage += `
-        <div class="option" onclick="handleCategorySelect('פיתוחי_מנהלים')">
+        <div class="option main-category" onclick="handleCategorySelect('פיתוחי_מנהלים')">
             <div class="option-header">
                 <h3><i class="fas fa-users-gear"></i> פיתוחי מנהלים</h3>
             </div>
         </div>
-        <div class="option" onclick="handleCategorySelect('ניהול_ממשקים_ושותפויות')">
+        <div class="option main-category" onclick="handleCategorySelect('ניהול_ממשקים_ושותפויות')">
             <div class="option-header">
                 <h3><i class="fas fa-network-wired"></i> ניהול ממשקים ושותפויות</h3>
             </div>
         </div>
-        <div class="option" onclick="handleCategorySelect('מיומנויות_שירות_ומכירה')">
+        <div class="option main-category" onclick="handleCategorySelect('מיומנויות_שירות_ומכירה')">
             <div class="option-header">
                 <h3><i class="fas fa-headset"></i> מיומנויות שירות ומכירה</h3>
             </div>
         </div>
-        <div class="option" onclick="handleCategorySelect('תהליכים_ארגוניים')">
+        <div class="option main-category" onclick="handleCategorySelect('תהליכים_ארגוניים')">
             <div class="option-header">
                 <h3><i class="fas fa-sitemap"></i> תהליכים ארגוניים</h3>
             </div>
         </div>
-        <div class="option" onclick="handleCategorySelect('סדנאות_חד_פעמיות')">
+        <div class="option main-category" onclick="handleCategorySelect('סדנאות_חד_פעמיות')">
             <div class="option-header">
                 <h3><i class="fas fa-chalkboard-user"></i> סדנאות חד פעמיות</h3>
             </div>
         </div>
-        <div class="option" onclick="handleCategorySelect('הרצאות')">
+        <div class="option main-category" onclick="handleCategorySelect('הרצאות')">
             <div class="option-header">
                 <h3><i class="fas fa-microphone"></i> הרצאות</h3>
             </div>
@@ -141,11 +141,11 @@ function handleCategorySelect(categoryId) {
     addMessage('user', `בחרתי ב${category.title}`);
     
     let botMessage = `<p>מצוין! הנה האפשרויות בקטגוריית ${category.title}:</p>`;
-    botMessage += '<div class="options-container">';
+    botMessage += '<div class="subcategories-container">';
     
     category.options.forEach((option, index) => {
         botMessage += `
-            <div class="option collapsed" onclick="toggleOption(event, ${index})">
+            <div class="option subcategory collapsed" onclick="toggleOption(event, ${index})">
                 <div class="option-header">
                     <h3>
                         <i class="fas fa-star"></i>
@@ -153,7 +153,7 @@ function handleCategorySelect(categoryId) {
                     </h3>
                     <i class="fas fa-chevron-down expand-icon"></i>
                 </div>
-                <div class="option-content">
+                <div class="option-content" style="max-height: 0;">
                     <p class="highlight">${option.content}</p>
                     ${option.details ? `
                         <ul>
@@ -267,9 +267,10 @@ function handlePhoneInput(event) {
 function toggleOption(event, index) {
     event.stopPropagation();
     
-    const options = document.querySelectorAll('.option');
+    const options = document.querySelectorAll('.subcategory');
     const option = options[index];
     const content = option.querySelector('.option-content');
+    const expandIcon = option.querySelector('.expand-icon');
     
     if (option.classList.contains('collapsed')) {
         // סגירת כל האפשרויות האחרות
@@ -277,8 +278,12 @@ function toggleOption(event, index) {
             if (opt !== option) {
                 opt.classList.add('collapsed');
                 const otherContent = opt.querySelector('.option-content');
+                const otherIcon = opt.querySelector('.expand-icon');
                 if (otherContent) {
                     otherContent.style.maxHeight = '0';
+                }
+                if (otherIcon) {
+                    otherIcon.style.transform = 'rotate(-90deg)';
                 }
             }
         });
@@ -287,6 +292,9 @@ function toggleOption(event, index) {
         option.classList.remove('collapsed');
         if (content) {
             content.style.maxHeight = content.scrollHeight + 'px';
+        }
+        if (expandIcon) {
+            expandIcon.style.transform = 'rotate(0)';
         }
         
         // גלילה חלקה לאפשרות שנפתחה
@@ -298,6 +306,9 @@ function toggleOption(event, index) {
         option.classList.add('collapsed');
         if (content) {
             content.style.maxHeight = '0';
+        }
+        if (expandIcon) {
+            expandIcon.style.transform = 'rotate(-90deg)';
         }
     }
 }
