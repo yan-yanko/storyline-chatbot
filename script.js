@@ -69,28 +69,27 @@ function addMessage(sender, content, isTyping = true) {
     }
 }
 
-function handleCategorySelect(category) {
-    currentCategory = category;
-    const categoryData = chatData.categories[category];
+function handleCategorySelect(categoryId) {
+    currentCategory = categoryId;
     
-    if (!categoryData) {
+    // בדיקה אם הקטגוריה קיימת
+    if (!chatData.categories[categoryId]) {
+        addMessage('user', `בחרתי ב${categoryId.replace(/_/g, ' ')}`);
         addMessage('bot', 'מצטער, אך הקטגוריה המבוקשת לא נמצאה.');
         return;
     }
 
+    const category = chatData.categories[categoryId];
+    
     // הוספת הודעת משתמש
-    addMessage('user', `<p>אני מעוניין לשמוע על ${categoryData.title}</p>`, false);
-
-    // הוספת תגובת הבוט
-    let content = `
-        <div class="category-content">
-            <h2><i class="fas fa-lightbulb"></i> ${categoryData.title}</h2>
-            ${categoryData.description ? `<p class="description">${categoryData.description}</p>` : ''}
-            <div class="options-container">
-    `;
-
-    categoryData.options.forEach((option, index) => {
-        content += `
+    addMessage('user', `בחרתי ב${category.title}`);
+    
+    // הוספת הודעת בוט עם האפשרויות
+    let botMessage = `<p>מצוין! הנה האפשרויות בקטגוריית ${category.title}:</p>`;
+    botMessage += '<div class="options-container">';
+    
+    category.options.forEach((option, index) => {
+        botMessage += `
             <div class="option collapsed" onclick="toggleOption(event, ${index})">
                 <div class="option-header">
                     <h3>
@@ -101,13 +100,10 @@ function handleCategorySelect(category) {
                 </div>
                 <div class="option-content">
                     <p class="highlight">${option.content}</p>
-                    ${option.details && option.details.length > 0 ? `
+                    ${option.details ? `
                         <ul>
                             ${option.details.map(detail => `
-                                <li>
-                                    <i class="fas fa-check-circle"></i>
-                                    ${detail}
-                                </li>
+                                <li><i class="fas fa-check-circle"></i> ${detail}</li>
                             `).join('')}
                         </ul>
                     ` : ''}
@@ -115,24 +111,20 @@ function handleCategorySelect(category) {
             </div>
         `;
     });
-
-    content += `
-            </div>
-            <p class="follow-up">לחצו על כל אפשרות כדי לראות פרטים נוספים</p>
-        </div>
-    `;
-
-    addMessage('bot', content);
     
-    // עדכון כפתורי הבחירה
+    botMessage += '</div>';
+    botMessage += '<p class="follow-up">לחץ על כל אפשרות כדי לקרוא עוד פרטים</p>';
+    
+    addMessage('bot', botMessage);
+    
+    // הסתרת הכפתורים הראשיים
+    document.getElementById('mainCategories').style.display = 'none';
+    
+    // הוספת כפתור חזרה
     const controls = document.getElementById('chatControls');
-    controls.innerHTML = `
-        <div class="button-grid">
-            <button class="secondary" onclick="handleBackToMain()">
-                <i class="fas fa-arrow-right"></i> חזרה לתפריט הראשי
-            </button>
-        </div>
-    `;
+    controls.insertAdjacentHTML('beforeend', `
+        <button class="secondary" onclick="handleBackToMain()">חזרה לתפריט הראשי</button>
+    `);
 }
 
 function toggleOption(event, index) {
@@ -196,10 +188,27 @@ function updateControls(state, categoryId = '') {
 }
 
 function handleBackToMain() {
-    addMessage('user', '<p>אני רוצה לחזור לתפריט הראשי</p>', false);
-    setTimeout(() => {
-        location.reload();
-    }, 1000);
+    addMessage('user', 'חזרה לתפריט הראשי');
+    
+    // הצגת הכפתורים הראשיים מחדש
+    document.getElementById('mainCategories').style.display = 'grid';
+    
+    // ניקוי כפתורי חזרה
+    const controls = document.getElementById('chatControls');
+    const backButtons = controls.querySelectorAll('button.secondary');
+    backButtons.forEach(button => button.remove());
+    
+    // ניקוי תוצאות חיפוש אם יש
+    const searchResults = document.querySelector('.search-results');
+    if (searchResults) {
+        searchResults.remove();
+    }
+    
+    // ניקוי תיבת החיפוש
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.value = '';
+    }
 }
 
 function handleBackToCategory() {
