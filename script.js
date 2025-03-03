@@ -38,6 +38,9 @@ function addMessage(sender, content, isTyping = true) {
     if (isTyping && sender === 'bot') {
         // הוספת אנימציית הקלדה
         messageDiv.innerHTML = `
+            <div class="message-avatar">
+                <img src="images/chatbot-avatar.png" alt="HR Bot">
+            </div>
             <div class="message-content typing">
                 <div class="typing-indicator">
                     <span></span>
@@ -52,6 +55,9 @@ function addMessage(sender, content, isTyping = true) {
         // המתנה של 1-2 שניות לפני הצגת התוכן
         setTimeout(() => {
             messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    <img src="images/chatbot-avatar.png" alt="HR Bot">
+                </div>
                 <div class="message-content">
                     ${content}
                 </div>
@@ -60,6 +66,11 @@ function addMessage(sender, content, isTyping = true) {
         }, Math.random() * 1000 + 1000);
     } else {
         messageDiv.innerHTML = `
+            ${sender === 'bot' ? `
+                <div class="message-avatar">
+                    <img src="images/chatbot-avatar.png" alt="HR Bot">
+                </div>
+            ` : ''}
             <div class="message-content">
                 ${content}
             </div>
