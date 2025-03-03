@@ -39,7 +39,7 @@ function addMessage(sender, content, isTyping = true) {
         // הוספת אנימציית הקלדה
         messageDiv.innerHTML = `
             <div class="message-avatar">
-                <img src="images/chatbot-avatar.png" alt="HR Bot">
+                <img src="images/אייק.png" alt="HR Bot">
             </div>
             <div class="message-content typing">
                 <div class="typing-indicator">
@@ -56,7 +56,7 @@ function addMessage(sender, content, isTyping = true) {
         setTimeout(() => {
             messageDiv.innerHTML = `
                 <div class="message-avatar">
-                    <img src="images/chatbot-avatar.png" alt="HR Bot">
+                    <img src="images/אייק.png" alt="HR Bot">
                 </div>
                 <div class="message-content">
                     ${content}
@@ -68,7 +68,7 @@ function addMessage(sender, content, isTyping = true) {
         messageDiv.innerHTML = `
             ${sender === 'bot' ? `
                 <div class="message-avatar">
-                    <img src="images/chatbot-avatar.png" alt="HR Bot">
+                    <img src="images/אייק.png" alt="HR Bot">
                 </div>
             ` : ''}
             <div class="message-content">
