@@ -131,7 +131,7 @@ function addMessage(sender, content, isTyping = true) {
 function handleCategorySelect(categoryId) {
     currentCategory = categoryId;
     
-    if (!chatData.categories[categoryId]) {
+    if (!chatData || !chatData.categories || !chatData.categories[categoryId]) {
         addMessage('user', `בחרתי ב${categoryId.replace(/_/g, ' ')}`);
         addMessage('bot', 'מצטער, אך הקטגוריה המבוקשת לא נמצאה.');
         return;
@@ -153,7 +153,7 @@ function handleCategorySelect(categoryId) {
                     </h3>
                     <i class="fas fa-chevron-down expand-icon"></i>
                 </div>
-                <div class="option-content" style="max-height: 0;">
+                <div class="option-content">
                     <p class="highlight">${option.content}</p>
                     ${option.details ? `
                         <ul>
@@ -162,7 +162,7 @@ function handleCategorySelect(categoryId) {
                             `).join('')}
                         </ul>
                     ` : ''}
-                    <button class="want-this-btn" onclick="handleWantThis('${option.title}')">אני רוצה את זה!</button>
+                    <button class="want-this-btn" onclick="event.stopPropagation(); handleWantThis('${option.title.replace(/'/g, "\\'")}')">אני רוצה את זה!</button>
                 </div>
             </div>
         `;
@@ -170,6 +170,12 @@ function handleCategorySelect(categoryId) {
     
     botMessage += '</div>';
     addMessage('bot', botMessage);
+    
+    // גלילה חלקה לתחתית הצ'אט
+    setTimeout(() => {
+        const chatMessages = document.getElementById('chat-messages');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 100);
 }
 
 function handleWantThis(optionTitle) {
@@ -272,26 +278,30 @@ function toggleOption(event, index) {
     const content = option.querySelector('.option-content');
     const expandIcon = option.querySelector('.expand-icon');
     
-    if (option.classList.contains('collapsed')) {
-        // סגירת כל האפשרויות האחרות
-        options.forEach((opt) => {
-            if (opt !== option) {
-                opt.classList.add('collapsed');
-                const otherContent = opt.querySelector('.option-content');
-                const otherIcon = opt.querySelector('.expand-icon');
-                if (otherContent) {
-                    otherContent.style.maxHeight = '0';
-                }
-                if (otherIcon) {
-                    otherIcon.style.transform = 'rotate(-90deg)';
-                }
+    // סגירת כל האפשרויות האחרות
+    options.forEach((opt) => {
+        if (opt !== option && !opt.classList.contains('collapsed')) {
+            opt.classList.add('collapsed');
+            const otherContent = opt.querySelector('.option-content');
+            const otherIcon = opt.querySelector('.expand-icon');
+            if (otherContent) {
+                otherContent.style.maxHeight = '0';
+                otherContent.style.opacity = '0';
             }
-        });
-        
-        // פתיחת האפשרות הנבחרת
+            if (otherIcon) {
+                otherIcon.style.transform = 'rotate(-90deg)';
+            }
+        }
+    });
+    
+    // פתיחה או סגירה של האפשרות הנבחרת
+    if (option.classList.contains('collapsed')) {
+        // פתיחת האפשרות
         option.classList.remove('collapsed');
         if (content) {
             content.style.maxHeight = content.scrollHeight + 'px';
+            content.style.opacity = '1';
+            content.style.padding = '1rem 0.5rem';
         }
         if (expandIcon) {
             expandIcon.style.transform = 'rotate(0)';
@@ -306,6 +316,8 @@ function toggleOption(event, index) {
         option.classList.add('collapsed');
         if (content) {
             content.style.maxHeight = '0';
+            content.style.opacity = '0';
+            content.style.padding = '0';
         }
         if (expandIcon) {
             expandIcon.style.transform = 'rotate(-90deg)';
@@ -439,4 +451,44 @@ function handleOptionClick(event, categoryId, optionTitle) {
     } else {
         option.classList.add('collapsed');
     }
+}
+
+function restartChat() {
+    // ניקוי כל ההודעות
+    const chatMessages = document.getElementById('chat-messages');
+    chatMessages.innerHTML = '';
+    
+    // הצגת הודעת פתיחה מחדש
+    showBotMessage("היי! אני אייק, עוזר אישי מבית +HR. אשמח לעזור לך למצוא את הפתרון המתאים עבורך.");
+    setTimeout(() => {
+        showMainOptions();
+    }, 1000);
+}
+
+function sendContactDetails(fullName, email, phone, topic) {
+    // יצירת תוכן המייל
+    const emailBody = `היי,
+${fullName} מתעניין ב${topic}
+
+הנה הפרטים ליצור איתו קשר:
+מייל: ${email}
+${phone ? `טלפון: ${phone}` : ''}`;
+
+    // שליחת המייל באמצעות EmailJS
+    emailjs.send('default_service', 'template_default', {
+        to_email: 'yan@hrplus.co.il',
+        from_name: fullName,
+        message: emailBody,
+        reply_to: email
+    })
+    .then(
+        function(response) {
+            console.log("SUCCESS", response);
+            showBotMessage("תודה רבה! הפרטים נשלחו בהצלחה. ניצור איתך קשר בהקדם.");
+        },
+        function(error) {
+            console.log("FAILED", error);
+            showBotMessage("מצטערים, הייתה בעיה בשליחת הפרטים. אנא נסה שוב מאוחר יותר או צור קשר ישירות במייל yan@hrplus.co.il");
+        }
+    );
 }
