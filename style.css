@@ -156,15 +156,13 @@ body {
 
 .options-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 1rem;
     margin-top: 1.5rem;
 }
 
 .option {
-    flex: 1;
-    min-width: 200px;
-    max-width: calc(33.333% - 1rem);
+    width: 100%;
     background-color: var(--chat-bg);
     border: 1px solid var(--primary-color);
     border-radius: 0.8rem;
@@ -204,10 +202,16 @@ body {
 }
 
 .option-content {
-    max-height: 500px;
-    opacity: 1;
-    transition: all 0.3s ease;
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
     overflow: hidden;
+    padding: 0 0.5rem;
+}
+
+.option:not(.collapsed) .option-content {
+    max-height: 1000px;
+    opacity: 1;
     padding: 1rem 0.5rem;
 }
 

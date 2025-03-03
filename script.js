@@ -265,20 +265,29 @@ function handlePhoneInput(event) {
 }
 
 function toggleOption(event, index) {
-    event.stopPropagation(); // מונע בעיות של הפעלה כפולה
+    event.stopPropagation();
     
     const options = document.querySelectorAll('.option');
     const option = options[index];
+    const content = option.querySelector('.option-content');
     
     if (option.classList.contains('collapsed')) {
         // סגירת כל האפשרויות האחרות
         options.forEach((opt) => {
             if (opt !== option) {
                 opt.classList.add('collapsed');
+                const otherContent = opt.querySelector('.option-content');
+                if (otherContent) {
+                    otherContent.style.maxHeight = '0';
+                }
             }
         });
+        
         // פתיחת האפשרות הנבחרת
         option.classList.remove('collapsed');
+        if (content) {
+            content.style.maxHeight = content.scrollHeight + 'px';
+        }
         
         // גלילה חלקה לאפשרות שנפתחה
         setTimeout(() => {
@@ -287,6 +296,9 @@ function toggleOption(event, index) {
     } else {
         // סגירת האפשרות
         option.classList.add('collapsed');
+        if (content) {
+            content.style.maxHeight = '0';
+        }
     }
 }
 
