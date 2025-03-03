@@ -30,7 +30,8 @@ async function loadChatData() {
 }
 
 function showMainOptions() {
-    let optionsMessage = '<div class="options-container">';
+    let optionsMessage = '<p>הנה כל הנושאים שלדעתי יכולים להיות רלוונטיים לכם:</p>';
+    optionsMessage += '<div class="options-container">';
     
     optionsMessage += `
         <div class="option" onclick="handleCategorySelect('פיתוחי_מנהלים')">
@@ -325,14 +326,7 @@ function updateControls(state, categoryId = '') {
 
 function handleBackToMain() {
     addMessage('user', 'חזרה לתפריט הראשי');
-    
-    // הצגת הכפתורים הראשיים מחדש
-    document.getElementById('mainCategories').style.display = 'grid';
-    
-    // ניקוי כפתורי חזרה
-    const controls = document.getElementById('chatControls');
-    const backButtons = controls.querySelectorAll('button.secondary');
-    backButtons.forEach(button => button.remove());
+    showMainOptions();
     
     // ניקוי תוצאות חיפוש אם יש
     const searchResults = document.querySelector('.search-results');

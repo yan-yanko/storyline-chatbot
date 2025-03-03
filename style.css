@@ -155,13 +155,16 @@ body {
 }
 
 .options-container {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
     margin-top: 1.5rem;
 }
 
 .option {
+    flex: 1;
+    min-width: 200px;
+    max-width: calc(33.333% - 1rem);
     background-color: var(--chat-bg);
     border: 1px solid var(--primary-color);
     border-radius: 0.8rem;
@@ -169,7 +172,6 @@ body {
     transition: all 0.3s ease;
     cursor: pointer;
     overflow: hidden;
-    margin-bottom: 1rem;
 }
 
 .option:hover {
@@ -328,6 +330,10 @@ button.secondary:hover {
     
     .message.user .message-avatar {
         margin-right: 0.5rem;
+    }
+    
+    .option {
+        max-width: 100%;
     }
 }
 
