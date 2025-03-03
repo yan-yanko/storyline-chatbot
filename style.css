@@ -1,12 +1,12 @@
 :root {
-    --primary-color: #8B5CF6;
-    --secondary-color: #4C1D95;
-    --background-color: #0F172A;
-    --chat-bg: #1E293B;
-    --text-color: #E2E8F0;
-    --bot-message-bg: #1F2937;
-    --user-message-bg: #4C1D95;
-    --hover-color: #7C3AED;
+    --primary-color: #00A6C4;
+    --secondary-color: #007A91;
+    --background-color: #F0F9FB;
+    --chat-bg: #FFFFFF;
+    --text-color: #333333;
+    --bot-message-bg: #F0F9FB;
+    --user-message-bg: #00A6C4;
+    --hover-color: #00BBD9;
 }
 
 body {
