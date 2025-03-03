@@ -1,6 +1,7 @@
 let currentCategory = '';
 let chatData;
 let allOptions = [];
+let userDetails = {};
 
 // טעינת הנתונים מקובץ ה-JSON
 async function loadChatData() {
@@ -19,10 +20,53 @@ async function loadChatData() {
                 });
             });
         });
+
+        // הצגת האפשרויות הראשיות בצ'אט
+        showMainOptions();
     } catch (error) {
         console.error('שגיאה בטעינת הנתונים:', error);
         addMessage('bot', 'מצטער, אך אירעה שגיאה בטעינת הנתונים. אנא נסה שוב מאוחר יותר.');
     }
+}
+
+function showMainOptions() {
+    let optionsMessage = '<div class="options-container">';
+    
+    optionsMessage += `
+        <div class="option" onclick="handleCategorySelect('פיתוחי_מנהלים')">
+            <div class="option-header">
+                <h3><i class="fas fa-users-gear"></i> פיתוחי מנהלים</h3>
+            </div>
+        </div>
+        <div class="option" onclick="handleCategorySelect('ניהול_ממשקים_ושותפויות')">
+            <div class="option-header">
+                <h3><i class="fas fa-network-wired"></i> ניהול ממשקים ושותפויות</h3>
+            </div>
+        </div>
+        <div class="option" onclick="handleCategorySelect('מיומנויות_שירות_ומכירה')">
+            <div class="option-header">
+                <h3><i class="fas fa-headset"></i> מיומנויות שירות ומכירה</h3>
+            </div>
+        </div>
+        <div class="option" onclick="handleCategorySelect('תהליכים_ארגוניים')">
+            <div class="option-header">
+                <h3><i class="fas fa-sitemap"></i> תהליכים ארגוניים</h3>
+            </div>
+        </div>
+        <div class="option" onclick="handleCategorySelect('סדנאות_חד_פעמיות')">
+            <div class="option-header">
+                <h3><i class="fas fa-chalkboard-user"></i> סדנאות חד פעמיות</h3>
+            </div>
+        </div>
+        <div class="option" onclick="handleCategorySelect('הרצאות')">
+            <div class="option-header">
+                <h3><i class="fas fa-microphone"></i> הרצאות</h3>
+            </div>
+        </div>
+    `;
+    
+    optionsMessage += '</div>';
+    addMessage('bot', optionsMessage);
 }
 
 // פונקציה שמתבצעת בטעינת הדף
@@ -50,7 +94,6 @@ function addMessage(sender, content, isTyping = true) {
             </div>
         `;
         chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
         
         // המתנה של 1-2 שניות לפני הצגת התוכן
         setTimeout(() => {
@@ -62,7 +105,6 @@ function addMessage(sender, content, isTyping = true) {
                     ${content}
                 </div>
             `;
-            chatMessages.scrollTop = chatMessages.scrollHeight;
         }, Math.random() * 1000 + 1000);
     } else {
         messageDiv.innerHTML = `
@@ -75,15 +117,19 @@ function addMessage(sender, content, isTyping = true) {
                 ${content}
             </div>
         `;
-        chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
+    
+    chatMessages.appendChild(messageDiv);
+    
+    // גלילה חלקה לתחתית הצ'אט
+    setTimeout(() => {
+        messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, 100);
 }
 
 function handleCategorySelect(categoryId) {
     currentCategory = categoryId;
     
-    // בדיקה אם הקטגוריה קיימת
     if (!chatData.categories[categoryId]) {
         addMessage('user', `בחרתי ב${categoryId.replace(/_/g, ' ')}`);
         addMessage('bot', 'מצטער, אך הקטגוריה המבוקשת לא נמצאה.');
@@ -91,11 +137,8 @@ function handleCategorySelect(categoryId) {
     }
 
     const category = chatData.categories[categoryId];
-    
-    // הוספת הודעת משתמש
     addMessage('user', `בחרתי ב${category.title}`);
     
-    // הוספת הודעת בוט עם האפשרויות
     let botMessage = `<p>מצוין! הנה האפשרויות בקטגוריית ${category.title}:</p>`;
     botMessage += '<div class="options-container">';
     
@@ -118,24 +161,106 @@ function handleCategorySelect(categoryId) {
                             `).join('')}
                         </ul>
                     ` : ''}
+                    <button class="want-this-btn" onclick="handleWantThis('${option.title}')">אני רוצה את זה!</button>
                 </div>
             </div>
         `;
     });
     
     botMessage += '</div>';
-    botMessage += '<p class="follow-up">לחץ על כל אפשרות כדי לקרוא עוד פרטים</p>';
-    
     addMessage('bot', botMessage);
-    
-    // הסתרת הכפתורים הראשיים
-    document.getElementById('mainCategories').style.display = 'none';
-    
-    // הוספת כפתור חזרה
-    const controls = document.getElementById('chatControls');
-    controls.insertAdjacentHTML('beforeend', `
-        <button class="secondary" onclick="handleBackToMain()">חזרה לתפריט הראשי</button>
+}
+
+function handleWantThis(optionTitle) {
+    userDetails.selectedOption = optionTitle;
+    addMessage('user', `אני רוצה את ${optionTitle}`);
+    addMessage('bot', `מעולה! אני רואה שבחרת את ${optionTitle}. כדי שנוכל להרחיב אבקש כמה פרטים ואדאג שייצרו איתך קשר.`);
+    setTimeout(() => askForName(), 1500);
+}
+
+function askForName() {
+    addMessage('bot', `
+        <p>מה שמך המלא?</p>
+        <div class="input-container">
+            <input type="text" id="fullName" placeholder="הקלד/י את שמך המלא" onkeypress="handleNameInput(event)">
+        </div>
     `);
+}
+
+function handleNameInput(event) {
+    if (event.key === 'Enter') {
+        const fullName = document.getElementById('fullName').value.trim();
+        if (fullName) {
+            userDetails.fullName = fullName;
+            addMessage('user', fullName);
+            addMessage('bot', `נעים להכיר ${fullName}!`);
+            setTimeout(() => askForEmail(), 1500);
+        }
+    }
+}
+
+function askForEmail() {
+    addMessage('bot', `
+        <p>מה המייל שלך?</p>
+        <div class="input-container">
+            <input type="email" id="email" placeholder="הקלד/י את כתובת המייל שלך" onkeypress="handleEmailInput(event)">
+        </div>
+    `);
+}
+
+function handleEmailInput(event) {
+    if (event.key === 'Enter') {
+        const email = document.getElementById('email').value.trim();
+        if (email && email.includes('@')) {
+            userDetails.email = email;
+            addMessage('user', email);
+            addMessage('bot', 'יופי!');
+            setTimeout(() => askForPhone(), 1500);
+        }
+    }
+}
+
+function askForPhone() {
+    addMessage('bot', `
+        <p>איכפת לך שיצרו איתך קשר טלפוני?</p>
+        <div class="yes-no-buttons">
+            <button class="yes" onclick="handlePhonePermission(true)">אני רוצה</button>
+            <button class="no" onclick="handlePhonePermission(false)">אני לא רוצה</button>
+        </div>
+    `);
+}
+
+function handlePhonePermission(wantsPhone) {
+    userDetails.wantsPhone = wantsPhone;
+    addMessage('user', wantsPhone ? 'אני רוצה' : 'אני לא רוצה');
+    
+    if (wantsPhone) {
+        setTimeout(() => askForPhoneNumber(), 1500);
+    } else {
+        addMessage('bot', 'סבבה לגמרי. כבר דואג שיחזרו אלייך למייל.');
+        // כאן אפשר להוסיף קוד לשליחת הפרטים לשרת
+    }
+}
+
+function askForPhoneNumber() {
+    addMessage('bot', `
+        <p>מה הטלפון שבו אפשר לתפוס אותך?</p>
+        <div class="input-container">
+            <input type="tel" id="phone" placeholder="הקלד/י את מספר הטלפון שלך" onkeypress="handlePhoneInput(event)">
+        </div>
+    `);
+}
+
+function handlePhoneInput(event) {
+    if (event.key === 'Enter') {
+        const phone = document.getElementById('phone').value.trim();
+        if (phone) {
+            userDetails.phone = phone;
+            addMessage('user', phone);
+            addMessage('bot', 'מעולה! אדאג שיצרו איתך קשר בהקדם.');
+            // כאן אפשר להוסיף קוד לשליחת הפרטים לשרת
+        }
+    }
 }
 
 function toggleOption(event, index) {
