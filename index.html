@@ -4,23 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>+HR - כל הפתרונות ל-HR</title>
-    <link rel="icon" type="image/png" href="images/אייק.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="/catalog/images/אייק.png">
+    <link rel="stylesheet" href="/catalog/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("YOUR_PUBLIC_KEY"); // נא להחליף עם המפתח הציבורי שלך מ-EmailJS
+        })();
+    </script>
 </head>
 <body>
     <div class="chat-container">
         <header class="chat-header">
             <h1>
-                <img src="images/אייק.png" alt="HR Bot" class="header-icon">
+                <img src="/catalog/images/אייק.png" alt="HR Bot" class="header-icon">
                 +HR - כל הפתרונות ל-HR
             </h1>
         </header>
         
-        <div class="chat-messages" id="chatMessages">
+        <div class="chat-messages" id="chat-messages">
             <div class="message bot">
                 <div class="message-avatar">
-                    <img src="images/אייק.png" alt="HR Bot">
+                    <img src="/catalog/images/אייק.png" alt="HR Bot">
                 </div>
                 <div class="message-content">
                     <p><strong>היי! 👋</strong></p>
@@ -40,6 +46,10 @@
         <div class="chat-controls" id="chatControls">
         </div>
     </div>
-    <script src="script.js"></script>
+    <button class="restart-button" onclick="restartChat()">
+        <i class="fas fa-redo"></i>
+        חזרה להתחלה
+    </button>
+    <script src="/catalog/script.js"></script>
 </body>
 </html>

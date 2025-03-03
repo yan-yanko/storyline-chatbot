@@ -6,7 +6,7 @@ let userDetails = {};
 // טעינת הנתונים מקובץ ה-JSON
 async function loadChatData() {
     try {
-        const response = await fetch('data.json');
+        const response = await fetch('/catalog/data.json');
         chatData = await response.json();
         console.log('נתונים נטענו בהצלחה:', chatData);
         
